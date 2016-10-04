@@ -4,10 +4,12 @@
   <title> Main </title>
  </head>
  <body>
-  <form action="/authenticate" method="POST">
+   {{result}}
+  <form action="/auth" method="POST">
    User: <input type="text" name="user"><br>
    Password: <input type="text" name="password"><br>
-   <input type="submit" value="Login">
+   <button name="action" value="login" type="submit"> Login </button>
+   <button name="action" value="register" type="submit">Register </button>
   </form>
  </body>
 </html>

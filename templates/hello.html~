@@ -4,10 +4,11 @@
   <title> Main </title>
  </head>
  <body>
-  <form method="POST" action="/authenticate/">
+  <form action="/authenticate" method="POST">
    User: <input type="text" name="user"><br>
    Password: <input type="text" name="password"><br>
-   <input type="submit" value="Login">
+   <input type="login" value="Login">
+   <input type="register" value="Register">
   </form>
  </body>
 </html>
