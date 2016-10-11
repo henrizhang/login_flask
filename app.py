@@ -1,8 +1,11 @@
 import csv
+import os
 import hashlib
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for, session
 app = Flask(__name__)
 
+app.secret_key=os.urandom(24)
+ 
 def searchUser(l, target):
     x=0
     while x<len(l):
@@ -13,13 +16,20 @@ def searchUser(l, target):
 
 @app.route('/')
 def login():
+    if ('user' in session):
+        return render_template('welcome.html')
     return render_template('hello.html')
+
+@app.route("/jacobo")
+def js():
+    redirect("http://xkcd.com")
+    print url_for("login")
 
 @app.route('/auth', methods=['POST'])
 def auth():
     action=request.form.get('action')
     if action=="login":
-        f=open('passwords.csv','r')
+        f=open('data/passwords.csv','r')
         accounts=f.read()
         rows=accounts.split('\n')
         counter=0
@@ -35,14 +45,15 @@ def auth():
             m.update(request.form['password'])
             hashedP=m.hexdigest()
             if (hashedP==rows[searchUser(rows, request.form['user'])][1]):
-                return render_template('login.html', result="Logged in")
+                session['user']=request.form["user"]
+                return render_template('welcome.html', result="Logged in")
             else:
                 return render_template('login.html', result="Wrong Password")
         f.close()
                 #changing variable dependent on login status
                 
     if action=="register":
-        f=open('passwords.csv','r+')
+        f=open('data/passwords.csv','r+')
         accounts=f.read()
         rows=accounts.split('\n')
         counter=0
@@ -60,7 +71,11 @@ def auth():
         else:
             return render_template('hello.html', result="Username is Taken")
 
-        
+@app.route("/logout", methods=['POST'])
+def logout():
+    session.pop('user')
+    return render_template('hello.html')
+
 if __name__ == '__main__':
     app.debug = True
     app.run()
